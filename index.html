@@ -1,847 +1,624 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bubbly Login & Signup Form</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-
-    body {
-      background: #1a1a2e;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .container {
-      position: relative;
-      width: 800px;
-      height: 500px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      display: flex;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      overflow: hidden;
-    }
-
-    .bubble {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      animation: float 8s ease-in-out infinite;
-      z-index: -1;
-    }
-
-    .forms-container {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-    }
-
-    .login-signup {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      z-index: 5;
-      transition: 0.5s;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 50%;
-      padding: 0 20px;
-      opacity: 0;
-      visibility: hidden;
-      transition: 0.5s;
-    }
-
-    form.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .form-title {
-      color: #fff;
-      font-size: 2em;
-      margin-bottom: 30px;
-      text-align: center;
-    }
-
-    .input-field {
-      width: 100%;
-      height: 50px;
-      background: rgba(255, 255, 255, 0.2);
-      margin: 10px 0;
-      border-radius: 25px;
-      display: flex;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .input-field input {
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      border: none;
-      outline: none;
-      padding: 0 20px;
-      color: #fff;
-      font-size: 1em;
-    }
-
-    .input-field .input-icon {
-      position: absolute;
-      right: 20px;
-      color: #fff;
-      font-size: 1.2em;
-    }
-
-    .input-field::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(to right, #ff416c, #ff4b2b);
-      transform: scaleX(0);
-      transition: transform 0.5s ease;
-      transform-origin: left;
-    }
-
-    .input-field:focus-within::before {
-      transform: scaleX(1);
-    }
-
-    .input-field input::placeholder {
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    .btn {
-      width: 150px;
-      height: 50px;
-      background: linear-gradient(to right, #ff416c, #ff4b2b);
-      border: none;
-      outline: none;
-      border-radius: 25px;
-      color: #fff;
-      font-size: 1em;
-      font-weight: 600;
-      margin: 20px 0;
-      cursor: pointer;
-      transition: 0.5s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn:hover {
-      transform: scale(1.05);
-    }
-
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-      transition: 0.5s;
-    }
-
-    .btn:hover::before {
-      left: 100%;
-    }
-
-    .social-text {
-      color: #fff;
-      margin: 10px 0;
-    }
-
-    .social-icons {
-      display: flex;
-      justify-content: center;
-      margin: 10px 0;
-    }
-
-    .social-icon {
-      width: 40px;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      margin: 0 5px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-      font-size: 1.2em;
-      text-decoration: none;
-      transition: 0.5s;
-    }
-
-    .social-icon:hover {
-      transform: translateY(-5px);
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    .toggle {
-      color: #fff;
-      margin-top: 20px;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    .panels-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .panel {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 50%;
-      min-height: 100%;
-      padding: 0 20px;
-      text-align: center;
-      position: absolute;
-    }
-
-    .left-panel {
-      background: rgba(255, 72, 88, 0.1);
-      left: 0;
-    }
-
-    .right-panel {
-      background: rgba(72, 158, 255, 0.1);
-      right: 0;
-    }
-
-    .panel-content {
-      color: #fff;
-      transition: 0.5s;
-    }
-
-    .panel h3 {
-      font-size: 1.5em;
-      margin-bottom: 10px;
-    }
-
-    .panel p {
-      margin-bottom: 20px;
-      opacity: 0.7;
-    }
-
-    .image {
-      width: 100%;
-      max-width: 200px;
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    .character {
-      width: 100%;
-    }
-
-    .character-eye {
-      position: absolute;
-      width: 15px;
-      height: 15px;
-      background: #fff;
-      border-radius: 50%;
-    }
-
-    .left-eye {
-      top: 80px;
-      left: 70px;
-    }
-
-    .right-eye {
-      top: 80px;
-      left: 115px;
-    }
-
-    .character-mouth {
-      position: absolute;
-      width: 40px;
-      height: 20px;
-      background: #fff;
-      border-radius: 0 0 20px 20px;
-      top: 110px;
-      left: 80px;
-    }
-
-    .btn-panel {
-      background: transparent;
-      border: 2px solid #fff;
-    }
-
-    /* Custom toggle checkbox */
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 30px;
-      margin: 15px 0;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(255, 255, 255, 0.2);
-      transition: .4s;
-      border-radius: 34px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 22px;
-      width: 22px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider {
-      background-color: #ff416c;
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(30px);
-    }
-
-    .remember-me {
-      display: flex;
-      align-items: center;
-      color: #fff;
-      margin: 10px 0;
-      width: 100%;
-      justify-content: flex-start;
-    }
-
-    .remember-me label {
-      margin-left: 10px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="forms-container">
-      <div class="login-signup">
-        <form class="login-form active">
-          <h2 class="form-title">Login</h2>
-          <div class="input-field">
-            <input type="text" placeholder="Username" id="login-username">
-            <div class="input-icon">👤</div>
-          </div>
-          <div class="input-field">
-            <input type="password" placeholder="Password" id="login-password">
-            <div class="input-icon">🔒</div>
-          </div>
-          <div class="remember-me">
-            <label class="switch">
-              <input type="checkbox">
-              <span class="slider"></span>
-            </label>
-            <label>Remember Me</label>
-          </div>
-          <button class="btn" id="login-btn">Login</button>
-          <p class="social-text">Or login with social platforms</p>
-          <div class="social-icons">
-            <a href="#" class="social-icon">f</a>
-            <a href="#" class="social-icon">G</a>
-            <a href="#" class="social-icon">in</a>
-            <a href="#" class="social-icon">🐦</a>
-          </div>
-          <p class="toggle" id="to-signup">Don't have an account? Sign up</p>
-        </form>
-
-        <form class="signup-form">
-          <h2 class="form-title">Sign Up</h2>
-          <div class="input-field">
-            <input type="text" placeholder="Username" id="signup-username">
-            <div class="input-icon">👤</div>
-          </div>
-          <div class="input-field">
-            <input type="email" placeholder="Email" id="signup-email">
-            <div class="input-icon">📧</div>
-          </div>
-          <div class="input-field">
-            <input type="password" placeholder="Password" id="signup-password">
-            <div class="input-icon">🔒</div>
-          </div>
-          <button class="btn" id="signup-btn">Sign Up</button>
-          <p class="social-text">Or sign up with social platforms</p>
-          <div class="social-icons">
-            <a href="#" class="social-icon">f</a>
-            <a href="#" class="social-icon">G</a>
-            <a href="#" class="social-icon">in</a>
-            <a href="#" class="social-icon">🐦</a>
-          </div>
-          <p class="toggle" id="to-login">Already have an account? Login</p>
-        </form>
-      </div>
-    </div>
-
-    <div class="panels-container">
-      <div class="panel left-panel">
-        <div class="panel-content" id="left-panel-content">
-          <h3>New here?</h3>
-          <p>Join our awesome community and discover amazing content!</p>
-          <div class="image">
-            <svg class="character" viewBox="0 0 200 200">
-              <circle cx="100" cy="100" r="80" fill="#ff6b6b" />
-              <circle class="left-eye-socket" cx="70" cy="80" r="20" fill="#fff" />
-              <circle class="right-eye-socket" cx="130" cy="80" r="20" fill="#fff" />
-              <circle class="left-pupil" cx="70" cy="80" r="10" fill="#333" />
-              <circle class="right-pupil" cx="130" cy="80" r="10" fill="#333" />
-              <path class="mouth" d="M70,120 Q100,150 130,120" stroke="#333" stroke-width="5" fill="none" />
-            </svg>
-          </div>
-          <button class="btn btn-panel" id="signup-toggle">Sign Up</button>
-        </div>
-      </div>
-
-      <div class="panel right-panel">
-        <div class="panel-content" id="right-panel-content">
-          <h3>Already a member?</h3>
-          <p>Login to access your personalized dashboard and content!</p>
-          <div class="image">
-            <svg class="character" viewBox="0 0 200 200">
-              <circle cx="100" cy="100" r="80" fill="#4e8cff" />
-              <circle class="left-eye-socket" cx="70" cy="80" r="20" fill="#fff" />
-              <circle class="right-eye-socket" cx="130" cy="80" r="20" fill="#fff" />
-              <circle class="left-pupil" cx="70" cy="80" r="10" fill="#333" />
-              <circle class="right-pupil" cx="130" cy="80" r="10" fill="#333" />
-              <path class="mouth" d="M70,130 Q100,100 130,130" stroke="#333" stroke-width="5" fill="none" />
-            </svg>
-          </div>
-          <button class="btn btn-panel" id="login-toggle">Login</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- GSAP CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
-  
-  <script>
-    // Create bubbles
-    function createBubbles() {
-      const colors = ['#ff6b6b', '#4e8cff', '#ffb347', '#98d4bb', '#c792ea'];
-      const body = document.querySelector('body');
-      
-      for (let i = 0; i < 30; i++) {
-        const bubble = document.createElement('div');
-        bubble.classList.add('bubble');
-        
-        const size = Math.random() * 100 + 50;
-        const position = Math.random() * 100;
-        const delay = Math.random() * 10;
-        const duration = Math.random() * 20 + 10;
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        
-        bubble.style.width = `${size}px`;
-        bubble.style.height = `${size}px`;
-        bubble.style.left = `${position}%`;
-        bubble.style.bottom = `-${size}px`;
-        bubble.style.backgroundColor = color;
-        bubble.style.opacity = Math.random() * 0.3 + 0.1;
-        
-        body.appendChild(bubble);
-        
-        gsap.to(bubble, {
-          y: `-${window.innerHeight + size}px`,
-          x: Math.random() * 100 - 50,
-          rotation: Math.random() * 360,
-          duration: duration,
-          delay: delay,
-          ease: "none",
-          repeat: -1,
-          onRepeat: function() {
-            gsap.set(bubble, {
-              y: 0,
-              x: Math.random() * 100 - 50,
-              left: `${Math.random() * 100}%`,
-            });
-          }
-        });
-      }
-    }
-    
-    // Run bubble animation
-    createBubbles();
-
-    // Background animation
-    gsap.to('body', {
-      backgroundColor: '#2e1a47',
-      duration: 10,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    });
-
-    // Form toggle functionality
-    const signupToggleBtn = document.getElementById('signup-toggle');
-    const loginToggleBtn = document.getElementById('login-toggle');
-    const toSignupBtn = document.getElementById('to-signup');
-    const toLoginBtn = document.getElementById('to-login');
-    const loginForm = document.querySelector('.login-form');
-    const signupForm = document.querySelector('.signup-form');
-    const leftPanel = document.querySelector('.left-panel');
-    const rightPanel = document.querySelector('.right-panel');
-    const leftPanelContent = document.getElementById('left-panel-content');
-    const rightPanelContent = document.getElementById('right-panel-content');
-    const container = document.querySelector('.container');
-
-    // Initial animations for page load
-    window.addEventListener('DOMContentLoaded', () => {
-      // Animate container
-      gsap.from(container, {
-        scale: 0.8,
-        opacity: 0,
-        duration: 1,
-        ease: "back.out(1.7)"
-      });
-
-      // Animate form
-      gsap.from('.login-form', {
-        x: -50,
-        opacity: 0,
-        duration: 1,
-        delay: 0.5
-      });
-
-      // Animate right panel
-      gsap.from('.right-panel', {
-        x: 50,
-        opacity: 0,
-        duration: 1,
-        delay: 0.5
-      });
-
-      // Animate character eyes
-      gsap.to('.left-pupil, .right-pupil', {
-        y: 5,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut"
-      });
-
-      // Animate characters
-      const characters = document.querySelectorAll('.character');
-      characters.forEach(char => {
-        gsap.to(char, {
-          y: -10,
-          duration: 2,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut"
-        });
-      });
-
-      // Animate mouths
-      const mouths = document.querySelectorAll('.mouth');
-      mouths.forEach(mouth => {
-        gsap.to(mouth, {
-          attr: { d: (i, target) => {
-            if (target.getAttribute('d').includes('Q100,150')) {
-              return "M70,120 Q100,140 130,120";
-            } else {
-              return "M70,130 Q100,110 130,130";
-            }
-          }},
-          duration: 2,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut"
-        });
-      });
-    });
-
-    // Function to toggle between forms
-    function toggleForms(showLogin) {
-      // Timeline for form switch animation
-      const tl = gsap.timeline();
-      
-      if (showLogin) {
-        // Hide signup, show login
-        tl.to(signupForm, { opacity: 0, duration: 0.3, onComplete: () => {
-          signupForm.classList.remove('active');
-          loginForm.classList.add('active');
-        }})
-        .to(loginForm, { opacity: 1, duration: 0.3 })
-        .to(leftPanel, { width: '50%', duration: 0.6, ease: "power2.inOut" }, "-=0.3")
-        .to(rightPanel, { width: '50%', duration: 0.6, ease: "power2.inOut" }, "-=0.6")
-        .from(leftPanelContent, { opacity: 0, x: -30, duration: 0.3 }, "-=0.3")
-        .from(rightPanelContent, { opacity: 0, x: 30, duration: 0.3 }, "-=0.3");
-        
-        // Animate character expressions
-        gsap.to('.left-panel .mouth', {
-          attr: { d: "M70,120 Q100,150 130,120" },
-          duration: 0.5
-        });
-        gsap.to('.right-panel .mouth', {
-          attr: { d: "M70,130 Q100,100 130,130" },
-          duration: 0.5
-        });
-      } else {
-        // Hide login, show signup
-        tl.to(loginForm, { opacity: 0, duration: 0.3, onComplete: () => {
-          loginForm.classList.remove('active');
-          signupForm.classList.add('active');
-        }})
-        .to(signupForm, { opacity: 1, duration: 0.3 })
-        .to(leftPanel, { width: '50%', duration: 0.6, ease: "power2.inOut" }, "-=0.3")
-        .to(rightPanel, { width: '50%', duration: 0.6, ease: "power2.inOut" }, "-=0.6")
-        .from(leftPanelContent, { opacity: 0, x: -30, duration: 0.3 }, "-=0.3")
-        .from(rightPanelContent, { opacity: 0, x: 30, duration: 0.3 }, "-=0.3");
-        
-        // Animate character expressions
-        gsap.to('.left-panel .mouth', {
-          attr: { d: "M70,130 Q100,100 130,130" },
-          duration: 0.5
-        });
-        gsap.to('.right-panel .mouth', {
-          attr: { d: "M70,120 Q100,150 130,120" },
-          duration: 0.5
-        });
-      }
-    }
-
-    // Button click event handlers
-    signupToggleBtn.addEventListener('click', () => toggleForms(false));
-    loginToggleBtn.addEventListener('click', () => toggleForms(true));
-    toSignupBtn.addEventListener('click', () => toggleForms(false));
-    toLoginBtn.addEventListener('click', () => toggleForms(true));
-
-    // Input field animations
-    const inputFields = document.querySelectorAll('.input-field input');
-    inputFields.forEach(input => {
-      input.addEventListener('focus', () => {
-        gsap.to(input.parentElement, {
-          scale: 1.05,
-          duration: 0.3,
-          ease: "power1.out"
-        });
-        
-        // Animate the icon
-        const icon = input.nextElementSibling;
-        gsap.to(icon, {
-          scale: 1.2,
-          rotate: 10,
-          duration: 0.3,
-          ease: "back.out(1.7)"
-        });
-      });
-      
-      input.addEventListener('blur', () => {
-        gsap.to(input.parentElement, {
-          scale: 1,
-          duration: 0.3,
-          ease: "power1.out"
-        });
-        
-        // Reset icon animation
-        const icon = input.nextElementSibling;
-        gsap.to(icon, {
-          scale: 1,
-          rotate: 0,
-          duration: 0.3,
-          ease: "back.out(1.7)"
-        });
-      });
-    });
-
-    // Button animations
-    const buttons = document.querySelectorAll('.btn');
-    buttons.forEach(btn => {
-      btn.addEventListener('mouseenter', () => {
-        gsap.to(btn, {
-          scale: 1.05,
-          duration: 0.3,
-          ease: "power1.out"
-        });
-      });
-      
-      btn.addEventListener('mouseleave', () => {
-        gsap.to(btn, {
-          scale: 1,
-          duration: 0.3,
-          ease: "power1.out"
-        });
-      });
-      
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        gsap.to(btn, {
-          scale: 0.95,
-          duration: 0.1,
-          yoyo: true,
-          repeat: 1,
-          ease: "power1.inOut"
-        });
-        
-        // Create burst effect
-        const btnRect = btn.getBoundingClientRect();
-        const centerX = btnRect.left + btnRect.width / 2;
-        const centerY = btnRect.top + btnRect.height / 2;
-        
-        for (let i = 0; i < 12; i++) {
-          const particle = document.createElement('div');
-          particle.style.position = 'fixed';
-          particle.style.width = '10px';
-          particle.style.height = '10px';
-          particle.style.borderRadius = '50%';
-          particle.style.backgroundColor = i % 2 === 0 ? '#ff416c' : '#ff4b2b';
-          particle.style.left = `${centerX}px`;
-          particle.style.top = `${centerY}px`;
-          particle.style.pointerEvents = 'none';
-          document.body.appendChild(particle);
-          
-          const angle = (i / 12) * Math.PI * 2;
-          const distance = Math.random() * 100 + 50;
-          
-          gsap.to(particle, {
-            x: Math.cos(angle) * distance,
-            y: Math.sin(angle) * distance,
-            opacity: 0,
-            duration: 1,
-            ease: "power2.out",
-            onComplete: () => {
-              document.body.removeChild(particle);
-            }
-          });
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Login & Signup Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
         
-        // Simulate form submission (add your actual form submission here)
-        const successMessage = document.createElement('div');
-        successMessage.style.position = 'fixed';
-        successMessage.style.top = '20px';
-        successMessage.style.left = '50%';
-        successMessage.style.transform = 'translateX(-50%)';
-        successMessage.style.padding = '10px 20px';
-        successMessage.style.backgroundColor = '#4CAF50';
-        successMessage.style.color = '#fff';
-        successMessage.style.borderRadius = '5px';
-        successMessage.style.zIndex = '1000';
-        successMessage.textContent = btn.id === 'login-btn' ? 'Login Successful!' : 'Sign Up Successful!';
-        successMessage.style.opacity = '0';
-        document.body.appendChild(successMessage);
+        body {
+            background: #0f0c29;
+            background: linear-gradient(135deg, #24243e, #302b63, #0f0c29);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
         
-        gsap.to(successMessage, {
-          opacity: 1,
-          y: 20,
-          duration: 0.5,
-          ease: "power2.out",
-          onComplete: () => {
-            setTimeout(() => {
-              gsap.to(successMessage, {
-                opacity: 0,
-                y: -20,
+        .container {
+            position: relative;
+            width: 850px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.7;
+            z-index: -1;
+        }
+        
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            background: #ff5858;
+            top: -100px;
+            left: -100px;
+        }
+        
+        .blob-2 {
+            width: 250px;
+            height: 250px;
+            background: #4facfe;
+            bottom: -80px;
+            right: -80px;
+        }
+        
+        .blob-3 {
+            width: 200px;
+            height: 200px;
+            background: #43e97b;
+            bottom: 120px;
+            left: -60px;
+        }
+        
+        .form-container {
+            position: absolute;
+            width: 400px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            transition: 0.5s;
+            z-index: 1;
+        }
+        
+        .login {
+            left: 0;
+            border-top-right-radius: 100px;
+            border-bottom-right-radius: 100px;
+        }
+        
+        .signup {
+            right: 0;
+            border-top-left-radius: 100px;
+            border-bottom-left-radius: 100px;
+        }
+        
+        .form-container h2 {
+            color: #fff;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            outline: none;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 16px;
+            letter-spacing: 1px;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+        
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .form-group input:focus {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .form-group label {
+            position: absolute;
+            top: -25px;
+            left: 15px;
+            color: #fff;
+            font-size: 14px;
+            letter-spacing: 1px;
+            pointer-events: none;
+            transition: 0.3s;
+            opacity: 0;
+        }
+        
+        .form-group input:focus ~ label,
+        .form-group input:valid ~ label {
+            opacity: 1;
+        }
+        
+        .form-container button {
+            position: relative;
+            width: 100%;
+            padding: 12px 0;
+            border: none;
+            outline: none;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #fa8bff, #2bd2ff, #2bff88);
+            background-size: 200% 200%;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            overflow: hidden;
+            z-index: 1;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .form-container button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #2bff88, #2bd2ff, #fa8bff);
+            background-size: 200% 200%;
+            opacity: 0;
+            transition: 0.5s;
+            z-index: -1;
+            border-radius: 30px;
+        }
+        
+        .form-container button:hover::before {
+            opacity: 1;
+        }
+        
+        .switch-form {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        .switch-form span {
+            color: #fff;
+            font-size: 24px;
+            transition: 0.5s;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .social-icon i {
+            color: #fff;
+            font-size: 20px;
+        }
+        
+        .info-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .info-text a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        /* Initial states for animations */
+        .form-container {
+            opacity: 0;
+        }
+        
+        .login {
+            transform: translateX(-50px);
+        }
+        
+        .signup {
+            transform: translateX(50px);
+        }
+        
+        .form-group {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .blob {
+            opacity: 0;
+        }
+        
+        .switch-form {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0);
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Decorative blobs -->
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        
+        <!-- Login Form -->
+        <div class="form-container login active">
+            <h2>Welcome Back</h2>
+            <div class="form-group">
+                <input type="text" required>
+                <label>Username</label>
+                <span class="placeholder">Username</span>
+            </div>
+            <div class="form-group">
+                <input type="password" required>
+                <label>Password</label>
+                <span class="placeholder">Password</span>
+            </div>
+            <button>LOGIN</button>
+            <div class="social-icons">
+                <div class="social-icon"><i class="fab fa-facebook-f"></i></div>
+                <div class="social-icon"><i class="fab fa-google"></i></div>
+                <div class="social-icon"><i class="fab fa-twitter"></i></div>
+            </div>
+            <p class="info-text">Don't have an account? <a href="#" class="switch-to-signup">Sign up</a></p>
+        </div>
+        
+        <!-- Signup Form -->
+        <div class="form-container signup">
+            <h2>Create Account</h2>
+            <div class="form-group">
+                <input type="text" required>
+                <label>Full Name</label>
+                <span class="placeholder">Full Name</span>
+            </div>
+            <div class="form-group">
+                <input type="email" required>
+                <label>Email</label>
+                <span class="placeholder">Email</span>
+            </div>
+            <div class="form-group">
+                <input type="password" required>
+                <label>Password</label>
+                <span class="placeholder">Password</span>
+            </div>
+            <div class="form-group">
+                <input type="password" required>
+                <label>Confirm Password</label>
+                <span class="placeholder">Confirm Password</span>
+            </div>
+            <button>SIGN UP</button>
+            <p class="info-text">Already have an account? <a href="#" class="switch-to-login">Login</a></p>
+        </div>
+        
+        <!-- Switch Button -->
+        <div class="switch-form">
+            <span><i class="fas fa-arrow-right"></i></span>
+        </div>
+    </div>
+
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+    
+    <script>
+        // DOM elements
+        const loginForm = document.querySelector('.login');
+        const signupForm = document.querySelector('.signup');
+        const switchBtn = document.querySelector('.switch-form');
+        const switchToSignup = document.querySelector('.switch-to-signup');
+        const switchToLogin = document.querySelector('.switch-to-login');
+        const container = document.querySelector('.container');
+        const blobs = document.querySelectorAll('.blob');
+        const formGroups = document.querySelectorAll('.form-group');
+        
+        // State
+        let isLogin = true;
+        
+        // Initial animations
+        window.addEventListener('load', () => {
+            // Create a timeline for initial animations
+            const tl = gsap.timeline();
+            
+            // Animate container
+            tl.to(container, {
+                duration: 1,
+                scale: 1,
+                opacity: 1,
+                ease: "power3.out"
+            });
+            
+            // Animate blobs
+            tl.to(blobs, {
+                duration: 1.5,
+                opacity: 0.7,
+                scale: 1,
+                stagger: 0.2,
+                ease: "elastic.out(1, 0.3)"
+            }, "-=0.5");
+            
+            // Animate login form
+            tl.to(loginForm, {
+                duration: 0.8,
+                opacity: 1,
+                x: 0,
+                ease: "power2.out"
+            }, "-=1");
+            
+            // Animate form groups
+            tl.to(loginForm.querySelectorAll('.form-group'), {
+                duration: 0.6,
+                opacity: 1,
+                y: 0,
+                stagger: 0.1,
+                ease: "power2.out"
+            }, "-=0.4");
+            
+            // Animate switch button
+            tl.to(switchBtn, {
+                duration: 0.8,
+                opacity: 1,
+                scale: 1,
+                ease: "back.out(1.7)"
+            }, "-=0.5");
+            
+            // Create floating animation for blobs
+            gsap.to(blobs, {
+                duration: 8,
+                x: "random(-30, 30)",
+                y: "random(-30, 30)",
+                rotation: "random(-15, 15)",
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+                stagger: 1
+            });
+        });
+        
+        // Switch animation function
+        function switchForms() {
+            const tl = gsap.timeline();
+            
+            // Rotate switch button
+            tl.to(switchBtn, {
                 duration: 0.5,
-                ease: "power2.in",
-                onComplete: () => {
-                  document.body.removeChild(successMessage);
-                }
-              });
-            }, 2000);
-          }
-        });
-      });
-    });
-
-    // Make eyes follow cursor
-    document.addEventListener('mousemove', (e) => {
-      const eyes = document.querySelectorAll('.left-pupil, .right-pupil');
-      eyes.forEach(eye => {
-        const eyeRect = eye.getBoundingClientRect();
-        const eyeCenterX = eyeRect.left + eyeRect.width / 2;
-        const eyeCenterY = eyeRect.top + eyeRect.height / 2;
+                rotation: isLogin ? 180 : 0,
+                ease: "back.out(1.7)"
+            });
+            
+            // Hide current form
+            tl.to(isLogin ? loginForm : signupForm, {
+                duration: 0.5,
+                opacity: 0,
+                x: isLogin ? -50 : 50,
+                ease: "power2.in"
+            }, "-=0.3");
+            
+            // Show new form
+            tl.to(isLogin ? signupForm : loginForm, {
+                duration: 0.5,
+                opacity: 1,
+                x: 0,
+                ease: "power2.out"
+            });
+            
+            // Animate form groups
+            tl.to(isLogin ? signupForm.querySelectorAll('.form-group') : loginForm.querySelectorAll('.form-group'), {
+                duration: 0.4,
+                opacity: 1,
+                y: 0,
+                stagger: 0.1,
+                ease: "power2.out"
+            }, "-=0.3");
+            
+            // Update state
+            isLogin = !isLogin;
+            
+            // Animate background gradient
+            gsap.to('body', {
+                duration: 2,
+                backgroundPosition: isLogin ? '0% 0%' : '100% 100%',
+                ease: "sine.inOut"
+            });
+            
+            // Animate blobs
+            gsap.to(blobs, {
+                duration: 1.5,
+                backgroundColor: function(i) {
+                    const colors = isLogin ? 
+                        ['#ff5858', '#4facfe', '#43e97b'] : 
+                        ['#ff4e50', '#2b67f8', '#7ee8fa'];
+                    return colors[i % colors.length];
+                },
+                scale: "random(0.9, 1.1)",
+                stagger: 0.2,
+                ease: "sine.inOut"
+            });
+        }
         
-        const angleRad = Math.atan2(e.clientY - eyeCenterY, e.clientX - eyeCenterX);
-        const maxDistance = 5;
-        const moveX = Math.cos(angleRad) * maxDistance;
-        const moveY = Math.sin(angleRad) * maxDistance;
+        // Event listeners
+        switchBtn.addEventListener('click', switchForms);
+        switchToSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (isLogin) switchForms();
+        });
+        switchToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!isLogin) switchForms();
+        });
         
-        gsap.to(eye, {
-          x: moveX,
-          y: moveY,
-          duration: 0.3,
-          ease: "power2.out"
+        // Input animations
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                gsap.to(input, {
+                    duration: 0.3,
+                    boxShadow: '0 0 15px rgba(255, 255, 255, 0.5)',
+                    scale: 1.02,
+                    ease: "power2.out"
+                });
+            });
+            
+            input.addEventListener('blur', () => {
+                gsap.to(input, {
+                    duration: 0.3,
+                    boxShadow: 'none',
+                    scale: 1,
+                    ease: "power2.out"
+                });
+            });
         });
-      });
-    });
-
-    // Add magnetic effect to social icons
-    const socialIcons = document.querySelectorAll('.social-icon');
-    socialIcons.forEach(icon => {
-      icon.addEventListener('mousemove', (e) => {
-        const rect = icon.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const distanceX = e.clientX - centerX;
-        const distanceY = e.clientY - centerY;
         
-        gsap.to(icon, {
-          x: distanceX / 5,
-          y: distanceY / 5,
-          duration: 0.3,
-          ease: "power2.out"
+        // Button hover animations
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                gsap.to(button, {
+                    duration: 0.8,
+                    backgroundPosition: '100% 100%',
+                    ease: "sine.inOut"
+                });
+            });
+            
+            button.addEventListener('mouseleave', () => {
+                gsap.to(button, {
+                    duration: 0.8,
+                    backgroundPosition: '0% 0%',
+                    ease: "sine.inOut"
+                });
+            });
+            
+            button.addEventListener('mousedown', () => {
+                gsap.to(button, {
+                    duration: 0.1,
+                    scale: 0.95,
+                    ease: "power2.out"
+                });
+            });
+            
+            button.addEventListener('mouseup', () => {
+                gsap.to(button, {
+                    duration: 0.5,
+                    scale: 1,
+                    ease: "elastic.out(1, 0.3)"
+                });
+                
+                // Click animation - ripple effect
+                const ripple = document.createElement('span');
+                ripple.style.position = 'absolute';
+                ripple.style.width = '5px';
+                ripple.style.height = '5px';
+                ripple.style.background = 'rgba(255, 255, 255, 0.8)';
+                ripple.style.borderRadius = '50%';
+                ripple.style.pointerEvents = 'none';
+                
+                button.appendChild(ripple);
+                
+                const rect = button.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height) * 3;
+                
+                gsap.set(ripple, {
+                    x: event.clientX - rect.left,
+                    y: event.clientY - rect.top,
+                    opacity: 1
+                });
+                
+                gsap.to(ripple, {
+                    duration: 1,
+                    width: size,
+                    height: size,
+                    x: event.clientX - rect.left - size/2,
+                    y: event.clientY - rect.top - size/2,
+                    opacity: 0,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        ripple.remove();
+                    }
+                });
+            });
         });
-      });
-      
-      icon.addEventListener('mouseleave', () => {
-        gsap.to(icon, {
-          x: 0,
-          y: 0,
-          duration: 0.5,
-          ease: "elastic.out(1, 0.3)"
+        
+        // Social icons animation
+        const socialIcons = document.querySelectorAll('.social-icon');
+        socialIcons.forEach(icon => {
+            icon.addEventListener('mouseenter', () => {
+                gsap.to(icon, {
+                    duration: 0.5,
+                    y: -8,
+                    scale: 1.2,
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+                    ease: "back.out(1.7)"
+                });
+            });
+            
+            icon.addEventListener('mouseleave', () => {
+                gsap.to(icon, {
+                    duration: 0.5,
+                    y: 0,
+                    scale: 1,
+                    boxShadow: 'none',
+                    ease: "power2.out"
+                });
+            });
         });
-      });
-    });
-  </script>
+        
+        // Background animation
+        gsap.to('body', {
+            duration: 20,
+            backgroundPosition: '100% 100%',
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut"
+        });
+        
+        // Add particles in the background
+        for (let i = 0; i < sec; i++) {
+            
+        }
+    </script>
 </body>
 </html>
